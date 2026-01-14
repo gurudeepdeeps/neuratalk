@@ -4,7 +4,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import MessageBubble from "./MessageBubble.jsx";
 import TypingIndicator from "./TypingIndicator.jsx";
 
-const API_BASE_URL = "http://localhost:5000";
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
 
 function ChatBox() {
   const [messages, setMessages] = useState([
