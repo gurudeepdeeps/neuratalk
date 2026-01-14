@@ -1,0 +1,28 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+    "Inter", "Segoe UI", sans-serif;
+}
+
+.neuratalk-heading {
+  font-family: "Orbitron", system-ui, -apple-system, BlinkMacSystemFont,
+    "SF Pro Text", "Inter", "Segoe UI", sans-serif;
+  letter-spacing: 0.08em;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(51, 65, 85, 0.8);
+  border-radius: 999px;
+}
