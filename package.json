@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "build": "npm --prefix client run build",
+    "build:client": "(cd client && npm install && npm run build)",
     "dev": "concurrently \"npm --prefix client run dev\" \"npm --prefix server run dev\"",
     "install-all": "npm install && npm --prefix client install && npm --prefix server install"
   }
