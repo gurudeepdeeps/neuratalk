@@ -1,12 +1,5 @@
 services:
   - type: web
-    name: neuratalk-client
-    runtime: static
-    plan: free
-    buildCommand: cd client && npm install && npm run build
-    staticPublishPath: client/dist
-
-  - type: web
     name: neuratalk-server
     runtime: node
     plan: free
@@ -15,5 +8,3 @@ services:
     envVars:
       - key: GEMINI_MODEL
         value: gemini-2.5-flash
-      - key: VITE_API_BASE_URL
-        value: https://neuratalk-server.onrender.com
