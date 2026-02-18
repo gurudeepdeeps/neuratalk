@@ -19,7 +19,11 @@ function ChatBox() {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [speechError, setSpeechError] = useState("");
+  const [speechSupported, setSpeechSupported] = useState(true);
+  const [isListening, setIsListening] = useState(false);
   const scrollRef = useRef(null);
+  const recognitionRef = useRef(null);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -27,10 +31,67 @@ function ChatBox() {
     }
   }, [messages, isLoading]);
 
+  useEffect(() => {
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      setSpeechSupported(false);
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = "en-US";
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.onresult = (event) => {
+      const transcript =
+        event.results && event.results[0] && event.results[0][0]
+          ? event.results[0][0].transcript
+          : "";
+      if (transcript) {
+        setInput((current) => {
+          const spacer = current.trim().length ? " " : "";
+          return current + spacer + transcript;
+        });
+        setSpeechError("");
+      }
+    };
+
+    recognition.onerror = (event) => {
+      if (event && event.error) {
+        setSpeechError(
+          event.error === "not-allowed"
+            ? "Microphone access denied."
+            : "Speech recognition error: " + event.error
+        );
+      } else {
+        setSpeechError("Speech recognition failed.");
+      }
+    };
+
+    recognition.onend = () => {
+      setIsListening(false);
+    };
+
+    recognitionRef.current = recognition;
+
+    return () => {
+      recognition.onresult = null;
+      recognition.onerror = null;
+      recognition.onend = null;
+      recognition.stop();
+    };
+  }, []);
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (!input.trim() || isLoading) {
       return;
+    }
+
+    if (isListening && recognitionRef.current) {
+      recognitionRef.current.stop();
     }
 
     const userMessage = {
@@ -93,6 +154,28 @@ function ChatBox() {
       }
     ]);
     setError("");
+    setSpeechError("");
+  };
+
+  const handleToggleListening = () => {
+    if (!speechSupported || !recognitionRef.current || isLoading) {
+      return;
+    }
+
+    setSpeechError("");
+    try {
+      recognitionRef.current.start();
+      setIsListening(true);
+    } catch (err) {
+      setIsListening(false);
+      setSpeechError("Could not start speech recognition.");
+    }
+  };
+
+  const handleStopListening = () => {
+    if (recognitionRef.current) {
+      recognitionRef.current.stop();
+    }
   };
 
   return (
@@ -156,6 +239,11 @@ function ChatBox() {
               {error}
             </div>
           )}
+          {speechError && (
+            <div className="mb-2 text-xs sm:text-sm text-amber-200 bg-amber-900/30 border border-amber-700/60 rounded-xl px-3 py-2">
+              {speechError}
+            </div>
+          )}
           <form
             onSubmit={handleSubmit}
             className="flex items-end gap-2 sm:gap-3"
@@ -173,6 +261,32 @@ function ChatBox() {
             <motion.button
               whileHover={{ scale: 1.04 }}
               whileTap={{ scale: 0.96 }}
+              type="button"
+              onClick={handleToggleListening}
+              disabled={!speechSupported || isLoading || isListening}
+              aria-pressed={isListening}
+              className={`inline-flex items-center justify-center rounded-2xl px-3 sm:px-4 py-2 sm:py-2.5 text-sm font-medium border transition-colors shadow-glow disabled:opacity-60 disabled:shadow-none disabled:cursor-not-allowed ${
+                isListening
+                  ? "bg-emerald-500/90 text-white border-emerald-400/80"
+                  : "bg-slate-900/70 text-slate-200 border-slate-700/80 hover:bg-slate-800/70"
+              }`}
+            >
+              Mic
+            </motion.button>
+            {isListening && (
+              <motion.button
+                whileHover={{ scale: 1.04 }}
+                whileTap={{ scale: 0.96 }}
+                type="button"
+                onClick={handleStopListening}
+                className="inline-flex items-center justify-center rounded-2xl px-3 sm:px-4 py-2 sm:py-2.5 text-sm font-medium border border-rose-500/70 bg-rose-500/20 text-rose-200 hover:bg-rose-500/30 transition-colors shadow-glow"
+              >
+                Stop
+              </motion.button>
+            )}
+            <motion.button
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.96 }}
               type="submit"
               disabled={isLoading || !input.trim()}
               className="inline-flex items-center justify-center rounded-2xl bg-gradient-to-tr from-sky-500 to-purple-500 text-white px-3 sm:px-4 py-2 sm:py-2.5 text-sm font-medium shadow-glow disabled:opacity-60 disabled:shadow-none disabled:cursor-not-allowed"
@@ -187,6 +301,7 @@ function ChatBox() {
           </form>
           <p className="mt-1.5 text-[10px] sm:text-xs text-slate-500 text-right">
             Press Enter to send, Shift + Enter for new line.
+            {speechSupported ? " Tap Mic to dictate." : " Voice input not supported."}
           </p>
         </div>
       </motion.div>
