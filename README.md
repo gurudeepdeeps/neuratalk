@@ -1,43 +1,52 @@
 # NeuraTalk – AI Chatbot Web App
 
-NeuraTalk is a modern, responsive AI chatbot web application built with **React + Vite** on the frontend and **Node.js + Express** on the backend, integrated with **Google Gemini** for AI responses.
+[![Live Demo](https://img.shields.io/badge/demo-live-success)](https://neuratalk-chatbot.netlify.app)
+[![Frontend](https://img.shields.io/badge/frontend-Netlify-00C7B7)](https://neuratalk-chatbot.netlify.app)
+[![Backend](https://img.shields.io/badge/backend-Render-46E3B7)](https://neuratalk-kwsm.onrender.com)
 
-The design is optimized for a **dark, futuristic, startup‑grade** feel with glassmorphism, gradients, and smooth animations.
+NeuraTalk is a modern, responsive AI chatbot web application built with **React + Vite** on the frontend and **Node.js + Express** on the backend, integrated with **Google Gemini AI** for intelligent conversations.
 
----
-
-## Features
-
-- Dark, futuristic UI with glassmorphism and neon gradients
-- Fully responsive (mobile, tablet, desktop)
-- Smooth animations using **Framer Motion**
-- AI chat powered by **Google Gemini**
-- Typing indicator and loading state
-- Auto‑scroll to latest message
-- Error handling with friendly messages
-- Markdown‑rendered AI responses
-- Welcome AI message on first load
-- Clear chat button
+The design features a **dark, futuristic UI** with glassmorphism effects, neon gradients, smooth animations, and voice input support.
 
 ---
 
-## Tech Stack
+## ✨ Features
 
-**Frontend**
+- 🎨 **Dark Futuristic UI** with glassmorphism and neon gradients
+- 📱 **Fully Responsive** design (mobile, tablet, desktop)
+- ✨ **Smooth Animations** using Framer Motion
+- 🤖 **AI-Powered Chat** with Google Gemini 2.5 Flash
+- 🎙️ **Voice Input** support with Web Speech API
+- ⌨️ **Markdown Rendering** for AI responses
+- 💬 **Typing Indicator** with loading states
+- 🔄 **Auto-scroll** to latest messages
+- ⚡ **Real-time Error Handling** with user-friendly messages
+- 🧹 **Clear Chat** functionality
+- 🎯 **Welcome Message** on first load
 
-- React (Vite)
-- Tailwind CSS
-- Framer Motion
-- Axios
-- React Markdown
+---
 
-**Backend**
+## 🛠️ Tech Stack
 
-- Node.js
-- Express.js
-- Native `fetch` to call the Gemini HTTP API
-- dotenv
-- CORS
+### Frontend
+- **React 18** - UI library
+- **Vite** - Build tool and dev server
+- **Tailwind CSS** - Utility-first styling
+- **Framer Motion** - Animation library
+- **Axios** - HTTP client
+- **React Markdown** - Markdown rendering
+
+### Backend
+- **Node.js** - Runtime environment
+- **Express.js** - Web framework
+- **Google Generative AI SDK** - Gemini API integration
+- **dotenv** - Environment configuration
+- **CORS** - Cross-origin resource sharing
+
+### Deployment
+- **Frontend**: Netlify
+- **Backend**: Render
+- **Version Control**: GitHub
 
 ---
 
@@ -109,84 +118,98 @@ sequenceDiagram
 
 ---
 
-## Backend – Setup and Usage
+## 🚀 Quick Start
 
-Backend path: `server/`
+### Prerequisites
+- Node.js 18+ installed
+- Google Gemini API key ([Get one here](https://aistudio.google.com/app/apikey))
+- Git
 
-### Environment Variables
+### Local Development Setup
 
-Create a `.env` file inside `server/`:
-
-```env
-GEMINI_API_KEY=your_real_gemini_api_key_here
-PORT=5000
-GEMINI_MODEL=gemini-1.5-flash
+1. **Clone the repository**
+```bash
+git clone https://github.com/gurudeepdeeps/neuratalk.git
+cd neuratalk
 ```
 
-- `GEMINI_API_KEY` – **required**, your Gemini API key from Google AI Studio.
-- `PORT` – port for the Express server (default `5000`).
-- `GEMINI_MODEL` – optional; defaults to `gemini-1.5-flash` if not set.
-
-> Never commit `.env` to Git. It must stay local or on your server host (e.g., Vercel/Render secrets).
-
-### Install Dependencies
-
-From the project root:
-
+2. **Setup Backend**
 ```bash
 cd server
 npm install
-```
 
-### Run Backend (Development)
+# Create .env file
+echo "GEMINI_API_KEY=your_api_key_here" > .env
+echo "PORT=5000" >> .env
+echo "GEMINI_MODEL=gemini-2.5-flash" >> .env
 
-```bash
-cd server
+# Start backend
 npm run dev
 ```
 
-The server starts on `http://localhost:5000`.
-
-Health check:
-
+3. **Setup Frontend** (in a new terminal)
 ```bash
-GET http://localhost:5000/
+cd client
+npm install
+
+# Create .env file (optional for local dev)
+echo "VITE_API_BASE_URL=http://localhost:5000" > .env
+
+# Start frontend
+npm run dev
 ```
 
-should respond:
+4. **Open your browser**
+```
+http://localhost:5173
+```
 
-```json
-{ "status": "NeuraTalk API running" }
+### Environment Variables
+
+**Backend (`server/.env`)**
+```env
+GEMINI_API_KEY=your_gemini_api_key
+PORT=5000
+GEMINI_MODEL=gemini-2.5-flash
+```
+
+**Frontend (`client/.env`)** (optional for local dev)
+```env
+VITE_API_BASE_URL=http://localhost:5000
+```
+
+> ⚠️ **Never commit `.env` files to Git!** They are already in `.gitignore`.
+
+---
+
+## 📡 API Reference
+
+### Health Check
+```http
+GET /
+Response: { "status": "NeuraTalk API running" }
 ```
 
 ### Chat Endpoint
+```http
+POST /api/chat
+Content-Type: application/json
 
-- **URL:** `POST /api/chat`
-- **Body:**
-
-```json
+Request Body:
 {
   "message": "Your question here"
 }
-```
 
-- **Response:**
-
-```json
+Success Response (200):
 {
   "reply": "AI response text from Gemini"
 }
-```
 
-On error, the backend returns:
-
-```json
+Error Response (4xx/5xx):
 {
-  "error": "Human‑readable error message"
+  "error": "Error description"
 }
 ```
-
-The frontend surfaces this message in the error UI.
 
 ---
 
@@ -224,47 +247,55 @@ with body:
 
 ---
 
-## Frontend – Setup and Usage
+## 🌐 Deployment
 
-Frontend path: `client/`
+### Production Deployment
 
-### Environment Variable (API base URL)
+The app is deployed using:
+- **Frontend**: Netlify (Static hosting)
+- **Backend**: Render (Node.js server)
 
-The frontend needs to know where the backend is deployed.
+### Deploy Your Own Instance
 
-In development, `ChatBox.jsx` uses a base URL that can be configured via Vite:
+#### Backend on Render
 
-```js
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+1. Push your code to GitHub
+2. Go to [render.com](https://render.com)
+3. Create a new **Web Service**
+4. Connect your repository
+5. Configure:
+   - **Root Directory**: `server`
+   - **Build Command**: `npm install`
+   - **Start Command**: `node index.js`
+6. Add environment variables:
+   - `GEMINI_API_KEY`: Your API key
+   - `GEMINI_MODEL`: `gemini-2.5-flash`
+7. Deploy
+8. Copy your backend URL (e.g., `https://your-app.onrender.com`)
+
+#### Frontend on Netlify
+
+1. Go to [netlify.com](https://netlify.com)
+2. Import your GitHub repository
+3. Configure build settings:
+   - **Build command**: `cd client && npm install && npm run build`
+   - **Publish directory**: `client/dist`
+4. Add environment variable:
+   - `VITE_API_BASE_URL`: Your Render backend URL
+5. Deploy
+
+#### CORS Configuration
+
+Update `server/index.js` to include your Netlify domain:
+```javascript
+const corsOptions = {
+  origin: [
+    "http://localhost:5173",
+    "https://your-netlify-domain.netlify.app"
+  ],
+  credentials: true
+};
 ```
-
-Create a `.env` file inside `client/` for local overrides if needed:
-
-```env
-VITE_API_BASE_URL=http://localhost:5000
-```
-
-### Install Dependencies
-
-```bash
-cd client
-npm install
-```
-
-### Run Frontend (Development)
-
-```bash
-cd client
-npm run dev
-```
-
-Vite will start the dev server, usually at:
-
-```text
-http://localhost:5173
-```
-
-With both frontend and backend running, open that URL to use NeuraTalk.
 
 ---
 
@@ -371,35 +402,160 @@ VITE_API_BASE_URL=https://neuratalk-api.onrender.com
 
 ---
 
-## Screenshots / Images (Optional)
+## 🏗️ Architecture
 
-To document UI visually in this README:
-
-1. Take screenshots of:
-   - Full desktop layout.
-   - Mobile view (chat open).
-2. Save them under `client/public/`, e.g.:
-
-```text
-client/public/screenshots/neuratalk-desktop.png
-client/public/screenshots/neuratalk-mobile.png
+### System Overview
+```mermaid
+graph TD
+    User[User Browser] --> Frontend[React Frontend<br/>Netlify]
+    Frontend -->|HTTPS| Backend[Express Backend<br/>Render]
+    Backend -->|API Call| Gemini[Google Gemini AI]
+    Gemini -->|AI Response| Backend
+    Backend -->|JSON| Frontend
 ```
 
-3. Reference them here:
-
-```markdown
-![NeuraTalk – Desktop](./client/public/screenshots/neuratalk-desktop.png)
-![NeuraTalk – Mobile](./client/public/screenshots/neuratalk-mobile.png)
+### Request Flow
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant F as Frontend
+    participant B as Backend
+    participant G as Gemini API
+    
+    U->>F: Send message
+    F->>F: Show typing indicator
+    F->>B: POST /api/chat
+    B->>G: Generate content
+    G-->>B: AI response
+    B-->>F: JSON reply
+    F->>F: Render markdown
+    F-->>U: Display response
 ```
 
 ---
 
-## Future Enhancements
+## 📁 Project Structure
 
-- Theme toggle (Dark vs. alternative neon themes)
-- Persistent conversation history (local storage or backend)
-- Authentication and user profiles
-- More advanced prompt templates and personality modes
+```
+neuratalk/
+├── client/                    # Frontend application
+│   ├── src/
+│   │   ├── components/       # React components
+│   │   │   ├── ChatBox.jsx
+│   │   │   ├── MessageBubble.jsx
+│   │   │   └── TypingIndicator.jsx
+│   │   ├── pages/
+│   │   │   └── Home.jsx
+│   │   ├── App.jsx
+│   │   ├── main.jsx
+│   │   └── index.css
+│   ├── public/
+│   │   └── neuratalk-logo.png
+│   ├── index.html
+│   ├── vite.config.js
+│   ├── tailwind.config.cjs
+│   └── package.json
+│
+├── server/                    # Backend application
+│   ├── controllers/
+│   │   └── geminiController.js
+│   ├── routes/
+│   │   └── chat.js
+│   ├── index.js              # Express server
+│   └── package.json
+│
+├── netlify.toml              # Netlify configuration
+├── render.yaml               # Render configuration
+├── .gitignore
+└── README.md
+```
 
-NeuraTalk is designed to be easy to customize for portfolios, SaaS demos, or startup landing pages. Feel free to adapt the styling, animations, and prompts to match your brand.
+---
+
+## 🎨 Features in Detail
+
+### Voice Input
+- Uses Web Speech API for voice-to-text
+- Supports continuous speech recognition
+- Browser compatibility check included
+- Error handling for microphone access
+
+### Markdown Support
+- Full markdown rendering in AI responses
+- Code syntax highlighting
+- Lists, tables, and formatting support
+- Responsive markdown elements
+
+### Responsive Design
+- Mobile-first approach
+- Breakpoints: 640px (sm), 768px (md), 1024px (lg)
+- Touch-friendly interface
+- Optimized for all screen sizes
+
+### Animation System
+- Framer Motion for smooth transitions
+- Message fade-in animations
+- Typing indicator animation
+- Button hover effects
+
+---
+
+## 🔮 Future Enhancements
+
+- [ ] Theme toggle (Light/Dark/Neon modes)
+- [ ] Persistent conversation history (LocalStorage/Database)
+- [ ] User authentication and profiles
+- [ ] Multi-language support
+- [ ] Export chat as PDF/Markdown
+- [ ] Custom AI personality modes
+- [ ] File upload support
+- [ ] Voice response (Text-to-Speech)
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+---
+
+## 📝 License
+
+This project is licensed under the MIT License.
+
+---
+
+## 👤 Author
+
+**Gurudeep V**
+- GitHub: [@gurudeepdeeps](https://github.com/gurudeepdeeps)
+- Portfolio: [Your Portfolio](https://your-portfolio-url.com)
+
+---
+
+## 🙏 Acknowledgments
+
+- [Google Gemini AI](https://ai.google.dev/) for the AI capabilities
+- [React](https://react.dev/) for the UI framework
+- [Tailwind CSS](https://tailwindcss.com/) for styling
+- [Framer Motion](https://www.framer.com/motion/) for animations
+- [Netlify](https://netlify.com/) & [Render](https://render.com/) for hosting
+
+---
+
+## 📞 Support
+
+If you have any questions or run into issues:
+- 📫 Open an issue on [GitHub Issues](https://github.com/gurudeepdeeps/neuratalk/issues)
+- 💬 Reach out via GitHub Discussions
+
+---
+
+**Made with ❤️ by Gurudeep**
 
