@@ -5,9 +5,6 @@ services:
     plan: free
     buildCommand: cd client && npm install && npm run build
     staticPublishPath: client/dist
-    envVars:
-      - key: VITE_API_BASE_URL
-        value: https://neuratalk-server.onrender.com
 
   - type: web
     name: neuratalk-server
@@ -18,7 +15,5 @@ services:
     envVars:
       - key: GEMINI_MODEL
         value: gemini-2.5-flash
-      - key: PORT
-        value: 3000
-    secrets:
-      - key: GEMINI_API_KEY
+      - key: VITE_API_BASE_URL
+        value: https://neuratalk-server.onrender.com
