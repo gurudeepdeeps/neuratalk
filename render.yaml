@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: neuratalk-server
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node server/index.js
+    envVars:
+      - key: GEMINI_API_KEY
+        scope: build,runtime
+      - key: GEMINI_MODEL
+        value: gemini-2.5-flash
+      - key: PORT
+        value: 3000
