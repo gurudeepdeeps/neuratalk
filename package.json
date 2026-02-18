@@ -3,11 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build": "cd client && npm install && npm run build",
+    "build": "npm --prefix client run build",
     "dev": "concurrently \"npm --prefix client run dev\" \"npm --prefix server run dev\"",
     "install-all": "npm install && npm --prefix client install && npm --prefix server install"
-  },
-  "devDependencies": {
-    "concurrently": "^9.0.0"
   }
 }
