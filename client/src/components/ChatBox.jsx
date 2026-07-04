@@ -13,7 +13,12 @@ function ChatBox() {
       id: "welcome",
       sender: "ai",
       text:
-        "Hi, I am NeuraTalk. Ask me anything about code, ideas, or content."
+        "Hi, I am NeuraTalk. Ask me anything about code, ideas, or content.",
+      recommendations: [
+        "Explain Quantum Computing in simple terms",
+        "What are the key concepts of a DBMS?",
+        "Suggest a fun coding project for beginners"
+      ]
     }
   ]);
   const [input, setInput] = useState("");
@@ -84,9 +89,9 @@ function ChatBox() {
     };
   }, []);
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    if (!input.trim() || isLoading) {
+  const sendMessage = async (textToSend) => {
+    const trimmedText = textToSend.trim();
+    if (!trimmedText || isLoading) {
       return;
     }
 
@@ -97,7 +102,7 @@ function ChatBox() {
     const userMessage = {
       id: `user-${Date.now()}`,
       sender: "user",
-      text: input.trim()
+      text: trimmedText
     };
 
     setMessages((current) => [...current, userMessage]);
@@ -113,11 +118,16 @@ function ChatBox() {
         response.data && typeof response.data.reply === "string"
           ? response.data.reply
           : "I could not understand the response from the server.";
+      const responseRecs =
+        response.data && Array.isArray(response.data.recommendations)
+          ? response.data.recommendations
+          : [];
 
       const aiMessage = {
         id: `ai-${Date.now()}`,
         sender: "ai",
-        text: replyText
+        text: replyText,
+        recommendations: responseRecs
       };
 
       setMessages((current) => [...current, aiMessage]);
@@ -138,6 +148,15 @@ function ChatBox() {
     }
   };
 
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    sendMessage(input);
+  };
+
+  const handleRecommendationClick = (recText) => {
+    sendMessage(recText);
+  };
+
   const handleKeyDown = (event) => {
     if (event.key === "Enter" && !event.shiftKey) {
       handleSubmit(event);
@@ -150,7 +169,12 @@ function ChatBox() {
         id: "welcome",
         sender: "ai",
         text:
-          "Chat cleared. I am ready for your next question."
+          "Chat cleared. I am ready for your next question.",
+        recommendations: [
+          "Explain Quantum Computing in simple terms",
+          "What are the key concepts of a DBMS?",
+          "Suggest a fun coding project for beginners"
+        ]
       }
     ]);
     setError("");
@@ -222,7 +246,10 @@ function ChatBox() {
                 exit={{ opacity: 0, y: -5, scale: 0.98 }}
                 transition={{ duration: 0.22 }}
               >
-                <MessageBubble message={message} />
+                <MessageBubble
+                  message={message}
+                  onRecommendationClick={handleRecommendationClick}
+                />
               </motion.div>
             ))}
           </AnimatePresence>

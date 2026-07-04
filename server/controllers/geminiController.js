@@ -18,7 +18,7 @@ export const handleChat = async (req, res) => {
     }
 
     const url =
-      "https://generativelanguage.googleapis.com/v1/models/" +
+      "https://generativelanguage.googleapis.com/v1beta/models/" +
       modelName +
       ":generateContent?key=" +
       apiKey;
@@ -37,7 +37,32 @@ export const handleChat = async (req, res) => {
               }
             ]
           }
-        ]
+        ],
+        systemInstruction: {
+          parts: [
+            {
+              text: "You are a helpful AI assistant. Provide a clear, comprehensive answer using markdown formatting in the 'reply' field. Additionally, suggest 3 highly relevant and engaging follow-up questions or next steps (recommendations) the user can ask to explore the topic deeper, and place them in the 'recommendations' array."
+            }
+          ]
+        },
+        generationConfig: {
+          responseMimeType: "application/json",
+          responseSchema: {
+            type: "OBJECT",
+            properties: {
+              reply: {
+                type: "STRING"
+              },
+              recommendations: {
+                type: "ARRAY",
+                items: {
+                  type: "STRING"
+                }
+              }
+            },
+            required: ["reply", "recommendations"]
+          }
+        }
       })
     });
 
@@ -62,8 +87,22 @@ export const handleChat = async (req, res) => {
       data.candidates[0].content.parts[0] &&
       data.candidates[0].content.parts[0].text;
 
+    let reply = "I could not generate a response.";
+    let recommendations = [];
+
+    if (text) {
+      try {
+        const parsed = JSON.parse(text);
+        reply = parsed.reply || reply;
+        recommendations = parsed.recommendations || [];
+      } catch (e) {
+        reply = text;
+      }
+    }
+
     return res.json({
-      reply: text || "I could not generate a response."
+      reply,
+      recommendations
     });
   } catch (error) {
     console.error("Gemini API error:", error);
